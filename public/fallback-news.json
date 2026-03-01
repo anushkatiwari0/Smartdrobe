@@ -1,0 +1,85 @@
+
+{
+    "items": [
+        {
+            "id": "fallback-1",
+            "type": "news",
+            "title": "Sustainable Fashion: A Guide to Eco-Friendly Fabrics",
+            "summary": "Learn about the most sustainable fabrics that are changing the fashion industry for the better.",
+            "mediaUrl": "https://picsum.photos/seed/sustainability/600/400",
+            "originalUrl": "#",
+            "source": "EcoStyle Weekly",
+            "publishedAt": "2024-05-20T10:00:00Z"
+        },
+        {
+            "id": "fallback-2",
+            "type": "social",
+            "title": "The perfect casual Friday look. Love these relaxed-fit jeans!",
+            "mediaUrl": "https://picsum.photos/seed/casualfriday/600/800",
+            "originalUrl": "#",
+            "source": "@stylebyemma",
+            "publishedAt": "2024-05-20T09:00:00Z",
+            "tags": ["OOTD", "CasualStyle", "DenimLove"]
+        },
+        {
+            "id": "fallback-3",
+            "type": "news",
+            "title": "The Top 5 Color Trends for the Upcoming Season",
+            "summary": "From pastel pinks to deep earthy tones, discover the colors you'll be seeing everywhere soon.",
+            "mediaUrl": "https://picsum.photos/seed/colortrends/600/400",
+            "originalUrl": "#",
+            "source": "Fashion Forward",
+            "publishedAt": "2024-05-20T08:00:00Z"
+        },
+        {
+            "id": "fallback-4",
+            "type": "news",
+            "title": "How to Build a Capsule Wardrobe: 10 Essential Pieces",
+            "summary": "Simplify your closet and your life with these 10 versatile items that form the perfect capsule wardrobe.",
+            "mediaUrl": "https://picsum.photos/seed/capsule/600/400",
+            "originalUrl": "#",
+            "source": "Minimalist Mode",
+            "publishedAt": "2024-05-19T18:00:00Z"
+        },
+        {
+            "id": "fallback-5",
+            "type": "social",
+            "title": "Monochrome magic for today's meeting.",
+            "mediaUrl": "https://picsum.photos/seed/monochrome/600/800",
+            "originalUrl": "#",
+            "source": "@thecorporatechic",
+            "publishedAt": "2024-05-19T14:00:00Z",
+            "tags": ["Workwear", "Monochrome", "PowerSuit"]
+        },
+        {
+            "id": "fallback-6",
+            "type": "news",
+            "title": "Vintage Revival: 90s Fashion is Back and Better Than Ever",
+            "summary": "Dust off your old favorites—the 90s are back. We explore the key trends making a comeback.",
+            "mediaUrl": "https://picsum.photos/seed/90sfashion/600/400",
+            "originalUrl": "#",
+            "source": "Retro Looks",
+            "publishedAt": "2024-05-18T20:00:00Z"
+        },
+        {
+            "id": "fallback-7",
+            "type": "social",
+            "title": "Sunny days and floral dresses ☀️🌸",
+            "mediaUrl": "https://picsum.photos/seed/floraldress/600/800",
+            "originalUrl": "#",
+            "source": "@sunnydaysstyle",
+            "publishedAt": "2024-05-18T16:00:00Z",
+            "tags": ["SummerDress", "Floral", "Sunshine"]
+        },
+        {
+            "id": "fallback-8",
+            "type": "news",
+            "title": "The Art of Accessorizing: How to Elevate Any Outfit",
+            "summary": "From statement necklaces to the perfect handbag, learn how accessories can transform your look.",
+            "mediaUrl": "https://picsum.photos/seed/accessories/600/400",
+            "originalUrl": "#",
+            "source": "Style & Co.",
+            "publishedAt": "2024-05-18T11:00:00Z"
+        }
+    ]
+}
