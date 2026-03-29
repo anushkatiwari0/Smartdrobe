@@ -5,32 +5,38 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { Shirt, Search, CalendarPlus, X, Sparkles } from 'lucide-react';
+import { Shirt, Search, CalendarPlus, X, Sparkles, User } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const steps = [
     {
         icon: Sparkles,
         title: "Welcome to SmartDrobe",
-        description: "Upload your clothes, let AI organize them, and instantly get daily outfit recommendations tailored to you.",
-        cta: "Let's Go",
+        description: "Your AI-powered wardrobe is ready! Let's personalize it in just 5 quick steps.",
+        cta: "Get Started",
     },
     {
         icon: Shirt,
-        title: "Add Your Clothes",
-        description: "Upload outfits from Gallery or snap photos with Camera.",
-        cta: "Start Uploading",
+        title: "Digitize Your Closet",
+        description: "Upload photos of your clothes from Gallery or snap them with Camera. AI will organize them automatically.",
+        cta: "Next",
     },
     {
         icon: Search,
-        title: "Organize & Filter",
-        description: "Easily filter by clothing type and color to find your pieces faster.",
-        cta: "Try Filters",
+        title: "AI Outfit Suggestions",
+        description: "Get personalized outfit recommendations based on your wardrobe, occasion, and mood.",
+        cta: "Next",
     },
     {
         icon: CalendarPlus,
-        title: "Create & Plan Outfits",
-        description: "Mix and match items, save combinations, and add them to your calendar.",
+        title: "Weather-Aware Picks",
+        description: "Mix and match items, save combinations, and plan outfits with real-time weather insights.",
+        cta: "Next",
+    },
+    {
+        icon: User,
+        title: "Personal Style Profile",
+        description: "Discover your unique Style DNA and get recommendations that match your aesthetic.",
         cta: "Start Building My Closet",
     },
 ];

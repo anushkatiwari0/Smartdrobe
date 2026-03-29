@@ -1,5 +1,6 @@
 import { createClient } from '@/lib/supabase/server';
 import { NextRequest, NextResponse } from 'next/server';
+import { WardrobeItemSchema, validateInput } from '@/lib/validation';
 
 /**
  * GET /api/wardrobe — returns all wardrobe items for the authenticated user
@@ -55,11 +56,17 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
-    const { name, category, description, imageUrl, aiHint, color, colors } = body;
 
-    if (!name || !category || !imageUrl) {
-        return NextResponse.json({ error: 'Missing required fields: name, category, imageUrl' }, { status: 400 });
+    // ✅ Validate and sanitize input with Zod
+    const validation = validateInput(WardrobeItemSchema, body);
+    if (!validation.success) {
+        return NextResponse.json({
+            error: 'Invalid input',
+            details: validation.errors
+        }, { status: 400 });
     }
+
+    const { name, category, description, imageUrl, aiHint, color, colors } = validation.data;
 
     const { data, error } = await supabase
         .from('wardrobe_items')

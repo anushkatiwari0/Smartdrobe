@@ -44,10 +44,28 @@ export async function middleware(request: NextRequest) {
         }
     );
 
-    // Refresh session — important: do NOT remove this line!
-    const {
-        data: { user },
-    } = await supabase.auth.getUser();
+    // Refresh session with error handling for stale tokens
+    let user = null;
+    try {
+        const { data, error } = await supabase.auth.getUser();
+
+        // If there's an auth error, clear the stale session cookies
+        if (error) {
+            console.warn('[Middleware] Auth error, clearing stale session:', error.message);
+            supabaseResponse.cookies.delete('sb-waoimuehhsakrgjyixrq-auth-token');
+            supabaseResponse.cookies.delete('sb-waoimuehhsakrgjyixrq-auth-token.0');
+            supabaseResponse.cookies.delete('sb-waoimuehhsakrgjyixrq-auth-token.1');
+        } else {
+            user = data.user;
+        }
+    } catch (err) {
+        // Handle network/fetch errors gracefully
+        console.error('[Middleware] Failed to fetch user session:', err);
+        // Clear potentially corrupted session cookies
+        supabaseResponse.cookies.delete('sb-waoimuehhsakrgjyixrq-auth-token');
+        supabaseResponse.cookies.delete('sb-waoimuehhsakrgjyixrq-auth-token.0');
+        supabaseResponse.cookies.delete('sb-waoimuehhsakrgjyixrq-auth-token.1');
+    }
 
     const pathname = request.nextUrl.pathname;
     const isProtected = PROTECTED_ROUTES.some((route) =>

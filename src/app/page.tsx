@@ -1,20 +1,24 @@
 
 'use client';
 
+import { useState, useEffect, lazy, Suspense } from 'react';
 import { motion } from 'framer-motion';
-import CTACard from '@/components/landing/cta-card';
-import DailyInspirationSection from '@/components/landing/daily-inspiration-section';
-import FeaturesSection from '@/components/landing/features-section';
-import Footer from '@/components/landing/footer';
-import HeroSection from '@/components/landing/hero-section';
-import InsightsPreviewSection from '@/components/landing/insights-preview-section';
-import HowItWorksSection from '@/components/landing/how-it-works-section';
-import TestimonialsSection from '@/components/landing/testimonials-section';
-import TrendingOutfitsSection from '@/components/landing/trending-outfits-section';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { Logo } from '@/components/logo';
-import FashionQuiz from '@/components/landing/fashion-quiz';
+import HeroSection from '@/components/landing/hero-section';
+import OnboardingDialog from '@/components/onboarding-dialog';
+
+// Lazy load non-critical components for better initial load
+const CTACard = lazy(() => import('@/components/landing/cta-card'));
+const DailyInspirationSection = lazy(() => import('@/components/landing/daily-inspiration-section'));
+const FeaturesSection = lazy(() => import('@/components/landing/features-section'));
+const Footer = lazy(() => import('@/components/landing/footer'));
+const InsightsPreviewSection = lazy(() => import('@/components/landing/insights-preview-section'));
+const HowItWorksSection = lazy(() => import('@/components/landing/how-it-works-section'));
+const TestimonialsSection = lazy(() => import('@/components/landing/testimonials-section'));
+const TrendingOutfitsSection = lazy(() => import('@/components/landing/trending-outfits-section'));
+const FashionQuiz = lazy(() => import('@/components/landing/fashion-quiz'));
 
 const fadeInUp = {
   initial: { opacity: 0, y: 20 },
@@ -24,8 +28,16 @@ const fadeInUp = {
 };
 
 export default function LandingPage() {
+  const [isOnboardingOpen, setIsOnboardingOpen] = useState(false);
+
+  useEffect(() => {
+    // Always show onboarding when landing on home page
+    setIsOnboardingOpen(true);
+  }, []);
+
   return (
     <div className="flex flex-col min-h-screen bg-background">
+      <OnboardingDialog open={isOnboardingOpen} onOpenChange={setIsOnboardingOpen} />
       <header className="px-4 lg:px-6 h-16 flex items-center bg-background/95 backdrop-blur-sm sticky top-0 z-50 border-b">
         <Link href="#" className="flex items-center justify-center" prefetch={false}>
           <Logo />
@@ -56,39 +68,41 @@ export default function LandingPage() {
           <HeroSection />
         </motion.div>
 
-        <InsightsPreviewSection />
+        <Suspense fallback={<div className="h-96 flex items-center justify-center"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div></div>}>
+          <InsightsPreviewSection />
 
-        <motion.div {...fadeInUp}>
-          <HowItWorksSection />
-        </motion.div>
+          <motion.div {...fadeInUp}>
+            <HowItWorksSection />
+          </motion.div>
 
+          <motion.div {...fadeInUp}>
+            <FeaturesSection />
+          </motion.div>
 
+          <motion.div {...fadeInUp}>
+            <TestimonialsSection />
+          </motion.div>
 
-        <motion.div {...fadeInUp}>
-          <FeaturesSection />
-        </motion.div>
+          <motion.div {...fadeInUp}>
+            <TrendingOutfitsSection />
+          </motion.div>
 
-        <motion.div {...fadeInUp}>
-          <TestimonialsSection />
-        </motion.div>
+          <motion.div {...fadeInUp}>
+            <DailyInspirationSection />
+          </motion.div>
 
-        <motion.div {...fadeInUp}>
-          <TrendingOutfitsSection />
-        </motion.div>
+          <motion.div {...fadeInUp}>
+            <FashionQuiz />
+          </motion.div>
 
-        <motion.div {...fadeInUp}>
-          <DailyInspirationSection />
-        </motion.div>
-
-        <motion.div {...fadeInUp}>
-          <FashionQuiz />
-        </motion.div>
-
-        <motion.div {...fadeInUp}>
-          <CTACard />
-        </motion.div>
+          <motion.div {...fadeInUp}>
+            <CTACard />
+          </motion.div>
+        </Suspense>
       </main>
-      <Footer />
+      <Suspense fallback={null}>
+        <Footer />
+      </Suspense>
     </div>
   );
 }

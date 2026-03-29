@@ -1,17 +1,15 @@
 
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
-import { Loader2, Leaf, TrendingUp } from 'lucide-react';
-import { Bar, BarChart, CartesianGrid, XAxis, YAxis, Tooltip, ResponsiveContainer, Pie, PieChart, Cell } from 'recharts';
-import Image from 'next/image';
+import { Loader2, Leaf } from 'lucide-react';
+import { Bar, BarChart, CartesianGrid, XAxis, YAxis, Tooltip, Pie, PieChart, Cell } from 'recharts';
 
 import { calculateCarbonFootprint } from '@/ai/flows/carbon-footprint-calculator';
 import { useToast } from '@/hooks/use-toast';
-import { useCloset } from '@/hooks/use-closet-store';
 import { Button } from '@/components/ui/button';
 import {
   Form,
@@ -30,7 +28,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
+import { ChartContainer, ChartTooltipContent } from '@/components/ui/chart';
 import type { ChartConfig } from '@/components/ui/chart';
 
 const formSchema = z.object({
@@ -95,24 +93,6 @@ export default function SustainabilityDashboard() {
   const [isLoading, setIsLoading] = useState(false);
   const [result, setResult] = useState<FootprintResult | null>(null);
   const { toast } = useToast();
-  const { closetItems, scheduledOutfits, itemsMap } = useCloset();
-
-  const usageStats = useMemo(() => {
-    const wearCount = new Map<string, number>();
-    Object.values(scheduledOutfits).forEach(outfit => {
-      outfit.itemIds.forEach(itemId => {
-        wearCount.set(itemId, (wearCount.get(itemId) || 0) + 1);
-      });
-    });
-
-    const mostWornItems = Array.from(wearCount.entries())
-      .sort((a, b) => b[1] - a[1])
-      .slice(0, 3)
-      .map(([id, count]) => ({ item: itemsMap.get(id), count }))
-      .filter(entry => entry.item);
-
-    return { mostWornItems };
-  }, [closetItems, scheduledOutfits, itemsMap]);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -302,39 +282,6 @@ export default function SustainabilityDashboard() {
           </CardContent>
         </Card>
       </div>
-
-      <div className="grid gap-6 md:grid-cols-2">
-        <Card className="md:col-span-2">
-          <CardHeader>
-            <CardTitle className="font-headline flex items-center gap-2">
-              <TrendingUp className="h-6 w-6 text-primary" /> Most Worn Items
-            </CardTitle>
-            <CardDescription>The items you love and wear the most. The first step to a sustainable wardrobe is wearing what you own!</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            {usageStats.mostWornItems.length > 0 ? (
-              usageStats.mostWornItems.map(({ item, count }) => item && (
-                <div key={item.id} className="flex items-center gap-4 p-2 rounded-md hover:bg-muted/50">
-                  <div className="w-16 h-16 relative rounded-md overflow-hidden border">
-                    <Image unoptimized src={item.imageUrl} alt={item.name} fill className="object-cover" data-ai-hint={item.aiHint} />
-                  </div>
-                  <div className="flex-grow">
-                    <p className="font-semibold">{item.name}</p>
-                    <p className="text-sm text-muted-foreground">{item.category}</p>
-                  </div>
-                  <div className="text-right">
-                    <p className="font-bold text-lg text-primary">{count}</p>
-                    <p className="text-xs text-muted-foreground">wears</p>
-                  </div>
-                </div>
-              ))
-            ) : (
-              <p className="text-sm text-muted-foreground text-center py-4">Schedule outfits in the calendar to see your most worn items.</p>
-            )}
-          </CardContent>
-        </Card>
-      </div>
-
 
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-5">
         <Card className="lg:col-span-3">

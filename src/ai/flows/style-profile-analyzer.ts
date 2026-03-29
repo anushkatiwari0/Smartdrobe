@@ -37,7 +37,11 @@ const StyleProfileAnalyzerOutputSchema = z.object({
         count: z.number().describe("The number of items in this category."),
         fill: z.string().describe("A hex color code for chart visualization."),
     })).describe("A breakdown of the wardrobe by clothing category."),
-    keyPieces: z.array(z.string()).describe("An array of 2-3 key clothing item suggestions to enhance the user's dominant style.")
+    keyPieces: z.array(z.string()).describe("An array of 2-3 key clothing item suggestions to enhance the user's dominant style."),
+    versatilityScore: z.number().min(0).max(100).describe("A score from 0-100 indicating how versatile and mix-and-matchable the wardrobe is."),
+    colorDiversity: z.number().min(0).max(100).describe("A score from 0-100 indicating color variety in the wardrobe."),
+    wardrobeGaps: z.array(z.string()).describe("An array of 2-3 missing category types or essential items that would complete the wardrobe."),
+    styleConfidence: z.number().min(0).max(100).describe("A score from 0-100 indicating how cohesive and well-defined the style is."),
 });
 export type StyleProfileAnalyzerOutput = z.infer<typeof StyleProfileAnalyzerOutputSchema>;
 
@@ -64,6 +68,10 @@ Based on this list, please perform the following analysis:
 3.  **Determine the Color Palette**: Identify the 3 to 5 most prominent colors in their wardrobe.
 4.  **Calculate Category Distribution**: Count the number of items in each category. For the output, create a list of objects, each with a 'name', 'count', and a unique 'fill' color. Use appealing **pastel** hex codes like '#a2d2ff', '#bde0fe', '#ffafcc', '#ffc8dd', '#cdb4db'.
 5.  **Suggest Key Pieces**: Based on the dominant style, suggest 2-3 key clothing or accessory items that would elevate their wardrobe.
+6.  **Calculate Versatility Score** (0-100): Rate how well items can be mixed and matched. Higher scores mean more outfit combinations possible.
+7.  **Calculate Color Diversity** (0-100): Measure the variety of colors. Balance is good - not too monotone, not too chaotic.
+8.  **Identify Wardrobe Gaps**: List 2-3 missing essential categories or items (e.g., "Formal shoes", "Light jacket", "Accessories").
+9.  **Calculate Style Confidence** (0-100): How cohesive and well-defined is the style? Higher means clearer identity.
 
 Return the final analysis in the specified JSON format.
 `
@@ -125,6 +133,9 @@ const styleProfileAnalyzerFlow = ai.defineFlow(
     const keyPieces = Array.isArray(output.keyPieces)
       ? output.keyPieces.map((k: unknown) => (typeof k === 'string' ? k : String(k)))
       : [];
+    const wardrobeGaps = Array.isArray(output.wardrobeGaps)
+      ? output.wardrobeGaps.map((g: unknown) => (typeof g === 'string' ? g : String(g)))
+      : ['Basic accessories', 'Versatile shoes'];
 
     return {
       dominantStyle: typeof output.dominantStyle === 'string' ? output.dominantStyle : 'Eclectic',
@@ -132,6 +143,10 @@ const styleProfileAnalyzerFlow = ai.defineFlow(
       colorPalette: colorPalette.length > 0 ? colorPalette : ['Neutral', 'Black', 'White'],
       categoryDistribution,
       keyPieces: keyPieces.length > 0 ? keyPieces : ['A versatile jacket', 'Statement accessories'],
+      versatilityScore: typeof output.versatilityScore === 'number' ? output.versatilityScore : 65,
+      colorDiversity: typeof output.colorDiversity === 'number' ? output.colorDiversity : 50,
+      wardrobeGaps,
+      styleConfidence: typeof output.styleConfidence === 'number' ? output.styleConfidence : 70,
     };
   }
 );

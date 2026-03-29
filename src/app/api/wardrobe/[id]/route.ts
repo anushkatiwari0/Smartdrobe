@@ -1,5 +1,6 @@
 import { createClient } from '@/lib/supabase/server';
 import { NextRequest, NextResponse } from 'next/server';
+import { WardrobeItemUpdateSchema, validateInput } from '@/lib/validation';
 
 /**
  * DELETE /api/wardrobe/[id] — remove a wardrobe item
@@ -46,14 +47,24 @@ export async function PUT(
     const { id } = await params;
     const body = await request.json();
 
+    // ✅ Validate input with Zod
+    const validation = validateInput(WardrobeItemUpdateSchema, body);
+    if (!validation.success) {
+        return NextResponse.json({
+            error: 'Invalid input',
+            details: validation.errors
+        }, { status: 400 });
+    }
+
     // Map camelCase → snake_case for DB update
     const updates: Record<string, unknown> = {};
-    if (body.wearCount !== undefined) updates.wear_count = body.wearCount;
-    if (body.lastWorn !== undefined) updates.last_worn = body.lastWorn;
-    if (body.aiSuggestionCount !== undefined) updates.ai_suggestion_count = body.aiSuggestionCount;
-    if (body.name !== undefined) updates.name = body.name;
-    if (body.category !== undefined) updates.category = body.category;
-    if (body.color !== undefined) updates.color = body.color;
+    if (validation.data.wearCount !== undefined) updates.wear_count = validation.data.wearCount;
+    if (validation.data.lastWorn !== undefined) updates.last_worn = validation.data.lastWorn;
+    if (validation.data.aiSuggestionCount !== undefined) updates.ai_suggestion_count = validation.data.aiSuggestionCount;
+    if (validation.data.name !== undefined) updates.name = validation.data.name;
+    if (validation.data.category !== undefined) updates.category = validation.data.category;
+    if (validation.data.color !== undefined) updates.color = validation.data.color;
+    if (validation.data.isFavorite !== undefined) updates.is_favorite = validation.data.isFavorite;
 
     const { data, error } = await supabase
         .from('wardrobe_items')

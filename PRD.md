@@ -1,8 +1,8 @@
 # Product Requirements Document (PRD)
 # SmartDrobe: AI-Powered Virtual Wardrobe & Personal Stylist
 
-**Version:** 1.0
-**Date:** March 1, 2026
+**Version:** 1.1
+**Date:** March 29, 2026
 **Status:** Production Ready
 **Document Owner:** Product Team
 
@@ -253,17 +253,17 @@ By 2027, SmartDrobe aims to:
 ---
 
 #### Feature 4: Onboarding Flow
-**Description:** Guided 5-step setup for new users to maximize AI accuracy.
+**Description:** Guided 5-step setup for new users to maximize AI accuracy and user engagement.
 
 **Requirements:**
-- Step 1: Welcome message + product overview
-- Step 2: Set location (city) for weather
-- Step 3: Define style preferences (keywords)
-- Step 4: Select favorite occasions
-- Step 5: Upload first 3-5 wardrobe items
+- Step 1: Welcome to SmartDrobe - Introduction and value proposition
+- Step 2: Digitize Your Closet - Upload clothes from gallery or camera with AI auto-organization
+- Step 3: AI Outfit Suggestions - Personalized recommendations based on wardrobe, occasion, and mood
+- Step 4: Weather-Aware Picks - Mix-and-match items with real-time weather insights
+- Step 5: Personal Style Profile - Discover unique Style DNA and get matching recommendations
 - Progress indicator (1 of 5, 2 of 5, etc.)
-- Skip option for each step
-- Completion triggers dashboard access
+- Always visible on home page until first interaction
+- Completion triggers dashboard access and preference persistence
 
 **User Stories:**
 - As a new user, I want a guided setup so I understand how to use SmartDrobe effectively
@@ -971,6 +971,7 @@ SmartDrobe v1.0 will be considered **successful** if, after 12 months:
 | Version | Date | Author | Changes |
 |---------|------|--------|---------|
 | 1.0 | 2026-03-01 | Product Team | Initial PRD based on production-ready codebase |
+| 1.1 | 2026-03-29 | Product Team | Updated: 5-step onboarding, 20 starter items, real-time style analytics, enhanced sustainability tracking |
 
 ---
 
@@ -988,5 +989,6 @@ SmartDrobe v1.0 will be considered **successful** if, after 12 months:
 
 **Document Status:** ✅ APPROVED FOR DEVELOPMENT
 
-**Next Review Date:** 2026-06-01 (Quarterly Review)
+**Last Updated:** 2026-03-29
+**Next Review Date:** 2026-06-29 (Quarterly Review)
 

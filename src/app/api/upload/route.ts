@@ -1,5 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { v2 as cloudinary } from 'cloudinary';
+import { createClient } from '@/lib/supabase/server';
+import { rateLimiters } from '@/lib/rate-limit';
+import { apiLogger } from '@/lib/logger';
 
 cloudinary.config({
     cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -13,6 +16,32 @@ cloudinary.config({
  * Returns: { url: string }
  */
 export async function POST(request: NextRequest) {
+    // ✅ Authentication check
+    const supabase = await createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+
+    if (!user) {
+        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    // ✅ Rate limiting (10 uploads per minute per user)
+    const rateLimitResult = rateLimiters.strict(user.id);
+    if (!rateLimitResult.success) {
+        return NextResponse.json(
+            {
+                error: 'Too many requests. Please try again later.',
+                retryAfter: Math.ceil((rateLimitResult.resetTime - Date.now()) / 1000)
+            },
+            {
+                status: 429,
+                headers: {
+                    'Retry-After': String(Math.ceil((rateLimitResult.resetTime - Date.now()) / 1000)),
+                    'X-RateLimit-Remaining': String(rateLimitResult.remaining)
+                }
+            }
+        );
+    }
+
     try {
         const formData = await request.formData();
         const file = formData.get('file') as File | null;
@@ -43,7 +72,7 @@ export async function POST(request: NextRequest) {
                     resource_type: 'image',
                     transformation: [
                         { width: 800, height: 800, crop: 'limit' },
-                        { quality: 'auto', fetch_format: 'auto' },
+                        { quality: 'auto:good', fetch_format: 'webp' },
                     ],
                 },
                 (error, result) => {
@@ -53,9 +82,10 @@ export async function POST(request: NextRequest) {
             ).end(buffer);
         });
 
+        apiLogger.info('Upload', 'Image uploaded successfully', { userId: user.id });
         return NextResponse.json({ url: result.secure_url });
     } catch (error) {
-        console.error('[Upload] Error:', error);
+        apiLogger.error('Upload', error, { userId: user.id });
         return NextResponse.json(
             { error: 'Failed to upload image. Please try again.' },
             { status: 500 }

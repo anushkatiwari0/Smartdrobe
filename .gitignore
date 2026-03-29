@@ -38,8 +38,23 @@ yarn-error.log*
 next-env.d.ts
 
 .genkit/*
+
+# ⚠️ CRITICAL: Never commit environment files with secrets!
 .env*
+!.env.example
 
 # firebase
 firebase-debug.log
 firestore-debug.log
+
+# logs
+logs/
+*.log
+
+# IDE
+.vscode/*
+!.vscode/settings.json
+.idea/
+
+# OS files
+Thumbs.db

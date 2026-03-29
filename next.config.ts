@@ -1,14 +1,21 @@
 
 import type { NextConfig } from 'next';
+import { validateEnv } from './src/lib/env-check';
+
+// ✅ Validate environment variables at build time
+if (process.env.NODE_ENV !== 'test') {
+  validateEnv();
+}
 
 const nextConfig: NextConfig = {
   /* config options here */
   typescript: {
-    ignoreBuildErrors: true,
+    ignoreBuildErrors: false, // ✅ Fail builds on TypeScript errors
   },
   eslint: {
-    ignoreDuringBuilds: true,
+    ignoreDuringBuilds: false, // ✅ Fail builds on ESLint errors
   },
+  output: 'standalone', // ✅ For Docker deployment
   images: {
     remotePatterns: [
       {
@@ -36,6 +43,40 @@ const nextConfig: NextConfig = {
         pathname: '/**',
       },
     ],
+  },
+  // ✅ Security headers
+  async headers() {
+    return [
+      {
+        source: '/:path*',
+        headers: [
+          {
+            key: 'Strict-Transport-Security',
+            value: 'max-age=31536000; includeSubDomains; preload',
+          },
+          {
+            key: 'X-Content-Type-Options',
+            value: 'nosniff',
+          },
+          {
+            key: 'X-Frame-Options',
+            value: 'DENY',
+          },
+          {
+            key: 'X-XSS-Protection',
+            value: '1; mode=block',
+          },
+          {
+            key: 'Referrer-Policy',
+            value: 'strict-origin-when-cross-origin',
+          },
+          {
+            key: 'Permissions-Policy',
+            value: 'camera=(), microphone=(), geolocation=()',
+          },
+        ],
+      },
+    ];
   },
 };
 

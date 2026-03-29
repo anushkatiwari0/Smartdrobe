@@ -1,16 +1,7 @@
 import { createClient } from '@/lib/supabase/server';
 import { NextRequest, NextResponse } from 'next/server';
-
-const VALID_EVENTS = [
-    'user_login',
-    'item_uploaded',
-    'outfit_generated',
-    'outfit_saved',
-    'profile_updated',
-    'page_view',
-] as const;
-
-type EventName = typeof VALID_EVENTS[number];
+import { EventSchema, validateInput } from '@/lib/validation';
+import { apiLogger } from '@/lib/logger';
 
 /**
  * POST /api/events — silently log a user analytics event
@@ -23,11 +14,15 @@ export async function POST(request: NextRequest) {
 
         // Events can be logged without auth (e.g., failed login attempts)
         const body = await request.json();
-        const { event, metadata } = body;
 
-        if (!VALID_EVENTS.includes(event as EventName)) {
-            return NextResponse.json({ error: 'Invalid event name' }, { status: 400 });
+        // ✅ Validate input with Zod
+        const validation = validateInput(EventSchema, body);
+        if (!validation.success) {
+            // Silently fail for analytics - never break the app
+            return NextResponse.json({ ok: true });
         }
+
+        const { event, metadata } = validation.data;
 
         const { error } = await supabase.from('user_events').insert({
             user_id: user?.id ?? null,
@@ -38,7 +33,7 @@ export async function POST(request: NextRequest) {
 
         if (error) {
             // Silently fail — analytics should never break the app
-            console.warn('[Analytics] Failed to log event:', error.message);
+            apiLogger.warn('Analytics', 'Failed to log event', { error: error.message, event });
         }
 
         return NextResponse.json({ ok: true });

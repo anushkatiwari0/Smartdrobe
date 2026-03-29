@@ -1,9 +1,9 @@
 
 'use client';
 
-import { useState, useMemo, useRef, useEffect } from 'react';
+import { useState, useMemo, useRef, memo } from 'react';
 import Image from 'next/image';
-import { PlusCircle, Loader2, Trash2, Check, X, WandSparkles, Upload, BadgeHelp, Filter, ChevronDown, CheckSquare, Combine, Sparkles, Shirt } from 'lucide-react';
+import { PlusCircle, Loader2, Trash2, Check, WandSparkles, Upload, Filter, ChevronDown, CheckSquare, Combine, Sparkles, Shirt, Search, Pencil } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
@@ -60,8 +60,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuCheckboxItem, DropdownMenuSeparator } from '@/components/ui/dropdown-menu';
-import OnboardingDialog from './onboarding-dialog';
+import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuCheckboxItem } from '@/components/ui/dropdown-menu';
 import { Badge } from './ui/badge';
 import { uploadImage } from '@/lib/image-upload';
 
@@ -134,14 +133,16 @@ const saveCombinationFormSchema = z.object({
   combinationName: z.string().min(3, { message: 'Combination name must be at least 3 characters.' }),
 });
 
-const ClosetItemCard = ({ item, isSelectionMode, isSelected, onSelect, onDelete }: {
+const ClosetItemCard = memo(({ item, isSelectionMode, isSelected, onSelect, onDelete, onEdit }: {
   item: ClosetItem,
   isSelectionMode: boolean,
   isSelected: boolean,
   onSelect: (item: ClosetItem) => void,
-  onDelete: (id: string, name: string) => void
+  onDelete: (id: string, name: string) => void,
+  onEdit: (item: ClosetItem) => void
 }) => {
   const [imgSrc, setImgSrc] = useState(item.imageUrl);
+  const [imgError, setImgError] = useState(false);
 
   return (
     <Card
@@ -164,16 +165,40 @@ const ClosetItemCard = ({ item, isSelectionMode, isSelected, onSelect, onDelete 
           <div className={cn("absolute inset-0 transition-all z-10", isSelected ? 'ring-2 ring-primary ring-offset-2' : 'group-hover:ring-2 group-hover:ring-primary/50')}></div>
         )}
         <div className="aspect-square relative transition-transform duration-500 group-hover:scale-105 bg-muted">
-          <Image unoptimized
-            src={imgSrc || 'https://placehold.co/600x600?text=No+Image'}
-            alt={item.name}
-            fill
-            className="object-cover"
-            data-ai-hint={item.aiHint}
-            onError={() => setImgSrc('https://placehold.co/600x600?text=Image+Error')}
-          />
+          {imgError ? (
+            <div className="absolute inset-0 flex items-center justify-center bg-muted">
+              <div className="text-center text-muted-foreground p-4">
+                <Shirt className="mx-auto h-12 w-12 mb-2 opacity-50" />
+                <p className="text-xs">Image unavailable</p>
+              </div>
+            </div>
+          ) : (
+            <Image
+              src={imgSrc}
+              alt={item.name}
+              fill
+              className="object-cover"
+              data-ai-hint={item.aiHint}
+              onError={() => setImgError(true)}
+              placeholder="blur"
+              blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mM8cPj4fwAHggLS8Y7LywAAAABJRU5ErkJggg=="
+              loading="lazy"
+            />
+          )}
         </div>
-        <div className="absolute top-2 right-2 z-20">
+        <div className="absolute top-2 right-2 z-20 flex gap-1">
+          <Button
+            variant="secondary"
+            size="icon"
+            className="h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity"
+            onClick={(e) => {
+              e.stopPropagation();
+              onEdit(item);
+            }}
+          >
+            <Pencil className="h-4 w-4" />
+            <span className="sr-only">Edit item</span>
+          </Button>
           <AlertDialog>
             <AlertDialogTrigger asChild>
               <Button variant="destructive" size="icon" className="h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -200,11 +225,13 @@ const ClosetItemCard = ({ item, isSelectionMode, isSelected, onSelect, onDelete 
       </CardFooter>
     </Card>
   );
-};
+});
 
 export default function ClosetView({ 'data-animate': animate }: { 'data-animate'?: boolean }) {
-  const { closetItems, addClosetItem, removeClosetItem, addUserOutfit } = useCloset();
+  const { closetItems, addClosetItem, removeClosetItem, updateClosetItem, addUserOutfit } = useCloset();
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [itemToEdit, setItemToEdit] = useState<ClosetItem | null>(null);
   const [isSaving, setIsSaving] = useState(false);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [isSelectionMode, setIsSelectionMode] = useState(false);
@@ -213,15 +240,20 @@ export default function ClosetView({ 'data-animate': animate }: { 'data-animate'
 
   const [tempSelectedCategories, setTempSelectedCategories] = useState<string[]>([]);
   const [appliedFilters, setAppliedFilters] = useState<{ categories: string[] }>({ categories: [] });
+  const [searchQuery, setSearchQuery] = useState('');
 
   const [photoDataUri, setPhotoDataUri] = useState<string | null>(null);
   const [fileToUpload, setFileToUpload] = useState<File | null>(null);
   const [analysisResult, setAnalysisResult] = useState<AnalyzeClosetItemOutput | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
-  const [isOnboardingOpen, setIsOnboardingOpen] = useState(false);
 
   const addItemForm = useForm<z.infer<typeof addItemFormSchema>>({
+    resolver: zodResolver(addItemFormSchema),
+    defaultValues: { name: '', category: '', color: '', description: '' },
+  });
+
+  const editItemForm = useForm<z.infer<typeof addItemFormSchema>>({
     resolver: zodResolver(addItemFormSchema),
     defaultValues: { name: '', category: '', color: '', description: '' },
   });
@@ -371,6 +403,37 @@ export default function ClosetView({ 'data-animate': animate }: { 'data-animate'
     });
   }
 
+  const handleEditItem = (item: ClosetItem) => {
+    setItemToEdit(item);
+    editItemForm.reset({
+      name: item.name,
+      category: item.category,
+      color: item.color,
+      description: item.description,
+    });
+    setIsEditDialogOpen(true);
+  };
+
+  const handleSaveEdit = async (values: z.infer<typeof addItemFormSchema>) => {
+    if (!itemToEdit) return;
+
+    updateClosetItem(itemToEdit.id, {
+      name: values.name,
+      category: values.category,
+      color: values.color.toLowerCase(),
+      description: values.description,
+    });
+
+    toast({
+      title: 'Item Updated!',
+      description: `${values.name} has been updated successfully.`,
+    });
+
+    setIsEditDialogOpen(false);
+    setItemToEdit(null);
+    editItemForm.reset();
+  };
+
   const handleToggleSelectionMode = () => {
     setIsSelectionMode(!isSelectionMode);
     setSelectedItems([]);
@@ -408,24 +471,27 @@ export default function ClosetView({ 'data-animate': animate }: { 'data-animate'
   const filteredItems = useMemo(() => {
     return closetItems.filter(item => {
       const categoryMatch = appliedFilters.categories.length === 0 || appliedFilters.categories.includes(item.category);
-      return categoryMatch;
+      const searchMatch = searchQuery.trim() === '' ||
+        item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        item.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        item.category.toLowerCase().includes(searchQuery.toLowerCase());
+      return categoryMatch && searchMatch;
     });
-  }, [closetItems, appliedFilters]);
-
-  useEffect(() => {
-    const hasVisited = localStorage.getItem('hasVisitedCloset');
-    if (!hasVisited) {
-      setIsOnboardingOpen(true);
-      localStorage.setItem('hasVisitedCloset', 'true');
-    }
-  }, []);
-
+  }, [closetItems, appliedFilters, searchQuery]);
 
   return (
     <div className="relative">
-      <OnboardingDialog open={isOnboardingOpen} onOpenChange={setIsOnboardingOpen} />
       <div className="flex flex-wrap gap-2 justify-between items-center mb-4">
-        <div className="flex flex-wrap gap-2 items-center">
+        <div className="flex flex-wrap gap-2 items-center flex-1">
+          <div className="relative flex-1 min-w-[200px] max-w-sm">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Input
+              placeholder="Search by name, category, or description..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="pl-10"
+            />
+          </div>
           <Filter className="h-5 w-5 text-muted-foreground" />
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -453,11 +519,6 @@ export default function ClosetView({ 'data-animate': animate }: { 'data-animate'
           </DropdownMenu>
 
           {appliedFilters.categories.length > 0 && <Button variant="ghost" onClick={handleResetFilters} className="h-9 px-3">Reset Filters</Button>}
-
-          <Button variant="ghost" size="icon" onClick={() => setIsOnboardingOpen(true)} className="ml-auto sm:ml-0">
-            <BadgeHelp className="h-5 w-5 text-muted-foreground" />
-            <span className="sr-only">Help</span>
-          </Button>
         </div>
         <div className="flex gap-2">
           <Button
@@ -489,7 +550,7 @@ export default function ClosetView({ 'data-animate': animate }: { 'data-animate'
                   <div className="space-y-4">
                     <div className="aspect-square relative bg-muted rounded-lg overflow-hidden border-2 border-dashed flex items-center justify-center">
                       {photoDataUri ? (
-                        <Image unoptimized src={photoDataUri} alt="Your outfit" fill className="object-cover" />
+                        <Image src={photoDataUri} alt="Your outfit" fill className="object-cover" unoptimized />
                       ) : (
                         <div className="text-center text-muted-foreground p-4">
                           <Upload className="mx-auto h-12 w-12" />
@@ -584,6 +645,70 @@ export default function ClosetView({ 'data-animate': animate }: { 'data-animate'
               </Form>
             </DialogContent>
           </Dialog>
+
+          {/* Edit Item Dialog */}
+          <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
+            <DialogContent className="sm:max-w-lg">
+              <DialogHeader>
+                <DialogTitle className="font-headline">Edit Item</DialogTitle>
+                <DialogDescription>
+                  Update the details of your clothing item.
+                </DialogDescription>
+              </DialogHeader>
+              <Form {...editItemForm}>
+                <form onSubmit={editItemForm.handleSubmit(handleSaveEdit)} className="space-y-4">
+                  <FormField control={editItemForm.control} name="name" render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Item Name</FormLabel>
+                      <FormControl><Input placeholder="e.g., Classic White Tee" {...field} /></FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )} />
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <FormField control={editItemForm.control} name="category" render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Category</FormLabel>
+                        <Select onValueChange={field.onChange} value={field.value}>
+                          <FormControl><SelectTrigger><SelectValue placeholder="Select..." /></SelectTrigger></FormControl>
+                          <SelectContent>{clothingCategories.map((cat) => (<SelectItem key={cat} value={cat}>{cat}</SelectItem>))}</SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )} />
+
+                    <FormField control={editItemForm.control} name="color" render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Color</FormLabel>
+                        <Select onValueChange={field.onChange} value={field.value}>
+                          <FormControl><SelectTrigger><SelectValue placeholder="Select..." /></SelectTrigger></FormControl>
+                          <SelectContent>{mainColors.map((color) => (<SelectItem key={color} value={color}>{color}</SelectItem>))}</SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )} />
+                  </div>
+
+                  <FormField control={editItemForm.control} name="description" render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Description</FormLabel>
+                      <FormControl><Textarea placeholder="Describe your item..." className="min-h-[100px]" {...field} /></FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )} />
+
+                  <DialogFooter>
+                    <Button type="button" variant="outline" onClick={() => setIsEditDialogOpen(false)}>
+                      Cancel
+                    </Button>
+                    <Button type="submit">
+                      Save Changes
+                    </Button>
+                  </DialogFooter>
+                </form>
+              </Form>
+            </DialogContent>
+          </Dialog>
         </div>
       </div>
 
@@ -602,9 +727,11 @@ export default function ClosetView({ 'data-animate': animate }: { 'data-animate'
           <p className="text-muted-foreground max-w-md mx-auto mb-6">
             Start digitizing your wardrobe by adding your first item. Upload a photo and let our AI handle the details.
           </p>
-          <Button onClick={() => setIsAddDialogOpen(true)} className="transition-transform hover:scale-105 active:scale-95 shadow-md">
-            <PlusCircle className="mr-2 h-4 w-4" /> Add Your First Item
-          </Button>
+          <div className="flex flex-wrap gap-3 justify-center">
+            <Button onClick={() => setIsAddDialogOpen(true)} className="transition-transform hover:scale-105 active:scale-95 shadow-md">
+              <PlusCircle className="mr-2 h-4 w-4" /> Add Your First Item
+            </Button>
+          </div>
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 pb-24">
@@ -619,6 +746,7 @@ export default function ClosetView({ 'data-animate': animate }: { 'data-animate'
                 isSelected={selectedItems.some(i => i.id === item.id)}
                 onSelect={handleItemSelect}
                 onDelete={handleDeleteItem}
+                onEdit={handleEditItem}
               />
             </div>
           ))}
@@ -634,7 +762,14 @@ export default function ClosetView({ 'data-animate': animate }: { 'data-animate'
                 <div className="flex gap-2">
                   {selectedItems.slice(0, 5).map(item => (
                     <div key={item.id} className="h-12 w-12 relative rounded-md overflow-hidden border-2 border-primary">
-                      <Image unoptimized src={item.imageUrl} alt={item.name} fill className="object-cover" />
+                      <Image
+                        src={item.imageUrl}
+                        alt={item.name}
+                        fill
+                        className="object-cover"
+                        placeholder="blur"
+                        blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mM8cPj4fwAHggLS8Y7LywAAAABJRU5ErkJggg=="
+                      />
                     </div>
                   ))}
                   {selectedItems.length > 5 && <div className="h-12 w-12 flex items-center justify-center bg-muted rounded-md text-sm font-semibold">+{selectedItems.length - 5}</div>}
