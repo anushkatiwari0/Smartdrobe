@@ -348,21 +348,6 @@ npm start
 
 ---
 
-## 🤝 Contributing
-
-We welcome contributions from the community! Whether you're fixing bugs, adding features, or improving documentation, your help is appreciated.
-
-**Quick Start:**
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'feat: add some amazing feature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
-
-See [CONTRIBUTING.md](CONTRIBUTING.md) for detailed guidelines.
-
----
-
 ## 📄 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
@@ -391,9 +376,7 @@ Built with:
 
 Built with ❤️ by **Anushka Tiwari**
 
-[⭐ Star this repo](https://github.com/anushkatiwari0/Smartdrobe) · [🐛 Report issues](https://github.com/anushkatiwari0/Smartdrobe/issues) · [🤝 Contribute](CONTRIBUTING.md)
-
-**Open Source · Community Driven · Production Ready**
+[⭐ Star this repo](https://github.com/anushkatiwari0/Smartdrobe) · [🐛 Report issues](https://github.com/anushkatiwari0/Smartdrobe/issues)
 
 **Production-ready · Secure · Scalable**
 
