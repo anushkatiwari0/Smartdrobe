@@ -261,7 +261,6 @@ See [DEPLOYMENT.md](./DEPLOYMENT.md) for detailed instructions for:
 | [PROJECT_STRUCTURE.md](./PROJECT_STRUCTURE.md) | Codebase architecture |
 | [SECURITY.md](./SECURITY.md) | Security best practices & audit |
 | [DEPLOYMENT.md](./DEPLOYMENT.md) | Deployment guides for all platforms |
-| [GITHUB_CHECKLIST.md](./GITHUB_CHECKLIST.md) | Pre-push checklist |
 
 ---
 
