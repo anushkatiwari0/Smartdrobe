@@ -58,12 +58,11 @@ Every user gets their own private, secure wardrobe with cloud-stored images and 
 ### Developer Experience
 | Feature | Description |
 |---------|-------------|
-| 🐳 **Docker Ready** | Multi-stage Dockerfile for containerized deployment |
 | 📱 **Fully Responsive** | Mobile-first design with Tailwind CSS |
 | 🌙 **Dark/Light Mode** | System-aware theme switching |
 | 📊 **Analytics** | Event tracking for user behavior analysis |
 | ⚡ **Fast Performance** | Optimized Next.js 15 with App Router |
-| 📖 **Complete Documentation** | Security, deployment, and API docs |
+| 📖 **Complete Documentation** | PRD and architecture docs |
 
 ---
 
@@ -79,7 +78,7 @@ Weather:      OpenWeatherMap API
 Logging:      Winston
 Validation:   Zod
 Security:     Rate limiting + Input sanitization + HTTPS headers
-Deployment:   Docker + Vercel
+Deployment:   Vercel
 ```
 
 ---
@@ -212,43 +211,32 @@ CREATE POLICY "Users own their wardrobe"
 
 ---
 
-## 🐳 Docker Deployment
-
-```bash
-# Build and run with Docker Compose
-docker-compose up -d
-
-# Or build manually
-docker build -t smartdrobe .
-docker run -p 3000:3000 --env-file .env.local smartdrobe
-
-# Check health
-curl http://localhost:3000/api/health
-```
-
----
-
-## 🌐 Production Deployment
+## 🌐 Deployment
 
 ### Vercel (Recommended)
 
-```bash
-# Install Vercel CLI
-npm i -g vercel
+1. **Install Vercel CLI**
+   ```bash
+   npm i -g vercel
+   ```
 
-# Deploy
-vercel --prod
-```
+2. **Deploy**
+   ```bash
+   vercel --prod
+   ```
 
-Then add environment variables in **Vercel Dashboard → Settings → Environment Variables**.
+3. **Set Environment Variables**
+   - Go to Vercel Dashboard → Settings → Environment Variables
+   - Add all variables from `.env.example`
 
 ### Other Platforms
 
-See [DEPLOYMENT.md](./DEPLOYMENT.md) for detailed instructions for:
-- AWS Elastic Beanstalk
+SmartDrobe can be deployed to any platform that supports Next.js:
+- Vercel (recommended)
 - Netlify
-- Self-hosted Docker
-- Kubernetes
+- AWS Amplify
+- Railway
+- Render
 
 ---
 
@@ -313,8 +301,7 @@ All authenticated routes include:
 - 💾 Better local storage handling for guest users with automatic STARTER_ITEMS population
 
 ### Developer Experience
-- 📝 Added comprehensive documentation (SECURITY.md, DEPLOYMENT.md, GITHUB_CHECKLIST.md)
-- 🐳 Docker support with multi-stage builds
+- 📝 Added comprehensive documentation
 - 🔒 Enhanced security with rate limiting, input validation, and structured logging
 - 🏥 Health check endpoint (`/api/health`) for monitoring
 
