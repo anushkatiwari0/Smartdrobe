@@ -10,7 +10,7 @@
 
 **Stop asking "What do I wear?" — Let AI answer it for you.**
 
-[Live Demo](#) · [Report Bug](https://github.com/yourusername/smartdrobe/issues) · [Request Feature](https://github.com/yourusername/smartdrobe/issues)
+[Report Bug](https://github.com/anushkatiwari0/Smartdrobe/issues) · [Request Feature](https://github.com/anushkatiwari0/Smartdrobe/issues)
 
 </div>
 
@@ -148,8 +148,8 @@ cp .env.example .env.local
 
 ```bash
 # 1. Clone the repository
-git clone https://github.com/yourusername/smartdrobe.git
-cd smartdrobe
+git clone https://github.com/anushkatiwari0/Smartdrobe.git
+cd Smartdrobe
 
 # 2. Install dependencies
 npm install

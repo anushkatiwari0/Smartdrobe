@@ -225,8 +225,14 @@ If you discover a security vulnerability or breach:
 
 ## 📞 Security Contacts
 
-- **Report Security Issues**: [Your Email]
-- **Emergency Contact**: [Your Phone]
+To report a security vulnerability, please:
+
+1. **Do NOT open a public GitHub issue** (this could expose the vulnerability)
+2. **Email security concerns** to the maintainer via GitHub
+3. **Use GitHub Security Advisories**: Go to the [Security tab](https://github.com/anushkatiwari0/Smartdrobe/security) in the repository
+4. **Expected Response Time**: Within 48 hours
+
+We take all security reports seriously and will respond promptly.
 
 ---
 
