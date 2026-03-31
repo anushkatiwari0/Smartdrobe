@@ -5,7 +5,6 @@
 
 ![SmartDrobe](https://img.shields.io/badge/SmartDrobe-v1.0-8B5CF6?style=for-the-badge)
 ![Next.js](https://img.shields.io/badge/Next.js-15-black?style=for-the-badge&logo=next.js)
-![Security](https://img.shields.io/badge/Security-10%2F10-green?style=for-the-badge)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5-blue?style=for-the-badge)
 
 **Stop asking "What do I wear?" — Let AI answer it for you.**
@@ -49,7 +48,7 @@ Every user gets their own private, secure wardrobe with cloud-stored images and 
 ### Security & Quality
 | Feature | Description |
 |---------|-------------|
-| 🔒 **10/10 Security** | Zero vulnerabilities, comprehensive security audit |
+| 🔒 **Secure Authentication** | Supabase Auth with Row-Level Security |
 | 🛡️ **Rate Limiting** | API abuse protection on all endpoints |
 | ✅ **Input Validation** | Zod schemas preventing XSS and injection attacks |
 | 📊 **Health Monitoring** | `/api/health` endpoint for uptime tracking |
@@ -259,25 +258,21 @@ See [DEPLOYMENT.md](./DEPLOYMENT.md) for detailed instructions for:
 |----------|-------------|
 | [PRD.md](./PRD.md) | Product Requirements Document |
 | [PROJECT_STRUCTURE.md](./PROJECT_STRUCTURE.md) | Codebase architecture |
-| [SECURITY.md](./SECURITY.md) | Security best practices & audit |
 | [DEPLOYMENT.md](./DEPLOYMENT.md) | Deployment guides for all platforms |
 
 ---
 
 ## 🔒 Security
 
-SmartDrobe achieves a **10/10 security score** with:
+SmartDrobe implements standard security practices:
 
-- ✅ **Zero vulnerabilities** in dependencies
-- ✅ **Authentication** on all API endpoints
-- ✅ **Rate limiting** to prevent abuse
+- ✅ **Authentication** on all API endpoints via Supabase Auth
+- ✅ **Rate limiting** to prevent API abuse
 - ✅ **Input validation** with Zod schemas
-- ✅ **HTTPS security headers** (HSTS, CSP, etc.)
 - ✅ **Row-Level Security** in database
 - ✅ **Environment validation** at startup
-- ✅ **Structured logging** with Winston
 
-See [SECURITY.md](./SECURITY.md) for complete security documentation.
+To report a security issue, please use [GitHub Security Advisories](https://github.com/anushkatiwari0/Smartdrobe/security).
 
 ---
 
