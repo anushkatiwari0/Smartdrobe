@@ -8,11 +8,11 @@ This guide covers deploying SmartDrobe to various platforms.
 
 Before deploying to production, ensure you have:
 
-- [ ] Rotated all API keys (see [SECURITY.md](./SECURITY.md))
+- [ ] Rotated all API keys and kept them secure
 - [ ] Set all environment variables in your hosting platform
 - [ ] Enabled RLS policies in Supabase
 - [ ] Tested the build locally: `npm run build`
-- [ ] Reviewed the [SECURITY.md](./SECURITY.md) checklist
+- [ ] Verified all environment variables are set correctly
 - [ ] Set up monitoring/alerting (optional but recommended)
 
 ---
@@ -438,7 +438,7 @@ npm run build
 
 ---
 
-**Need Help?** Check [SECURITY.md](./SECURITY.md) for security-related issues or open an issue on GitHub.
+**Need Help?** For security-related issues, use [GitHub Security Advisories](https://github.com/anushkatiwari0/Smartdrobe/security) or open an issue on GitHub.
 
 **Last Updated**: 2025-03-25
 **Version**: 1.0.0
