@@ -258,7 +258,6 @@ See [DEPLOYMENT.md](./DEPLOYMENT.md) for detailed instructions for:
 |----------|-------------|
 | [PRD.md](./PRD.md) | Product Requirements Document |
 | [PROJECT_STRUCTURE.md](./PROJECT_STRUCTURE.md) | Codebase architecture |
-| [DEPLOYMENT.md](./DEPLOYMENT.md) | Deployment guides for all platforms |
 
 ---
 
