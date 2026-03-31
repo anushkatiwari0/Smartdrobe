@@ -4,7 +4,8 @@
 **Version:** 1.1
 **Date:** March 29, 2026
 **Status:** Production Ready
-**Document Owner:** Product Team
+**Maintainer:** Anushka Tiwari
+**License:** MIT
 
 ---
 
@@ -970,8 +971,8 @@ SmartDrobe v1.0 will be considered **successful** if, after 12 months:
 ### 14.3 Revision History
 | Version | Date | Author | Changes |
 |---------|------|--------|---------|
-| 1.0 | 2026-03-01 | Product Team | Initial PRD based on production-ready codebase |
-| 1.1 | 2026-03-29 | Product Team | Updated: 5-step onboarding, 20 starter items, real-time style analytics, enhanced sustainability tracking |
+| 1.0 | 2026-03-01 | SmartDrobe Contributors | Initial PRD based on production-ready codebase |
+| 1.1 | 2026-03-29 | SmartDrobe Contributors | Updated: 5-step onboarding, 20 starter items, real-time style analytics, enhanced sustainability tracking |
 
 ---
 
