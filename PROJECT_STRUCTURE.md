@@ -14,9 +14,9 @@ This document explains the purpose of each folder and key file in the SmartDrobe
 | `.env.local` | ⚠️ Your actual secrets — **never commit this file** |
 | `tailwind.config.ts` | Tailwind CSS design tokens and theme |
 | `tsconfig.json` | TypeScript config — includes `@/` path alias for `src/` |
-| `scripts/seed-wardrobe.js` | One-time script to seed starter wardrobe items into Supabase |
-| `scripts/seed-aesthetic.js` | One-time script to seed aesthetic clothing items |
-| `scripts/run-schema.js` | Script to apply the database schema |
+| `PRD.md` | Product Requirements Document |
+| `PROJECT_STRUCTURE.md` | This file — codebase architecture guide |
+| `LICENSE` | MIT License |
 
 ---
 
@@ -136,18 +136,6 @@ Runs on every request **before** it reaches the page. Redirects:
 - Authenticated users accessing `/auth/*` → `/dashboard`
 
 Uses Supabase SSR session cookies for server-side auth.
-
----
-
-## `docs/` — Product Documentation
-
-| File | Description |
-|------|-------------|
-| `deployment.md` | Step-by-step Vercel + Supabase production deployment |
-| `case-study.md` | Product thinking — problem, solution, decisions |
-| `product-strategy.md` | Vision, MVP scope, monetization roadmap |
-| `personas.md` | Target user personas |
-| `metrics-framework.md` | North Star KPIs and activation metrics |
 
 ---
 

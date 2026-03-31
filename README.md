@@ -245,7 +245,7 @@ SmartDrobe can be deployed to any platform that supports Next.js:
 | Document | Description |
 |----------|-------------|
 | [PRD.md](./PRD.md) | Product Requirements Document |
-| [PROJECT_STRUCTURE.md](./PROJECT_STRUCTURE.md) | Codebase architecture |
+| [PROJECT_STRUCTURE.md](./PROJECT_STRUCTURE.md) | Codebase architecture guide |
 
 ---
 
