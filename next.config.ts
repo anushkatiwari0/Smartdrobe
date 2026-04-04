@@ -17,6 +17,15 @@ const nextConfig: NextConfig = {
     ignoreDuringBuilds: false, // ✅ Fail builds on ESLint errors
   },
   output: 'standalone', // ✅ For Docker deployment
+  webpack: (config) => {
+    // Ignore optional dependencies that aren't needed
+    config.resolve.alias = {
+      ...config.resolve.alias,
+      '@opentelemetry/exporter-jaeger': false,
+      '@genkit-ai/firebase': false,
+    };
+    return config;
+  },
   images: {
     remotePatterns: [
       {
