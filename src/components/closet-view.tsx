@@ -227,6 +227,8 @@ const ClosetItemCard = memo(({ item, isSelectionMode, isSelected, onSelect, onDe
   );
 });
 
+ClosetItemCard.displayName = 'ClosetItemCard';
+
 export default function ClosetView({ 'data-animate': animate }: { 'data-animate'?: boolean }) {
   const { closetItems, addClosetItem, removeClosetItem, updateClosetItem, addUserOutfit } = useCloset();
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
