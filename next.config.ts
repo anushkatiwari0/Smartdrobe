@@ -17,13 +17,17 @@ const nextConfig: NextConfig = {
     ignoreDuringBuilds: false, // ✅ Fail builds on ESLint errors
   },
   output: 'standalone', // ✅ For Docker deployment
-  webpack: (config) => {
-    // Ignore optional dependencies that aren't needed
-    config.resolve.alias = {
-      ...config.resolve.alias,
-      '@opentelemetry/exporter-jaeger': false,
-      '@genkit-ai/firebase': false,
-    };
+  webpack: (config, { webpack }) => {
+    // Ignore optional dependencies that Genkit doesn't require
+    config.plugins.push(
+      new webpack.IgnorePlugin({
+        resourceRegExp: /@opentelemetry\/exporter-jaeger/,
+      }),
+      new webpack.IgnorePlugin({
+        resourceRegExp: /@genkit-ai\/firebase/,
+      })
+    );
+
     return config;
   },
   images: {
