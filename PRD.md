@@ -90,36 +90,6 @@ SmartDrobe provides:
 - Environment validation at startup
 - Winston-based structured logging
 
-### Database Schema
-
-**profiles table:**
-```sql
-- id (UUID, primary key)
-- display_name (TEXT)
-- location_city (TEXT)
-- onboarding_completed (BOOLEAN)
-- created_at (TIMESTAMP)
-```
-
-**wardrobe_items table:**
-```sql
-- id (UUID, primary key)
-- user_id (UUID, foreign key)
-- name (TEXT)
-- category (TEXT)
-- color (TEXT)
-- colors (TEXT[])
-- description (TEXT)
-- image_url (TEXT)
-- wear_count (INT)
-- is_favorite (BOOLEAN)
-- created_at (TIMESTAMP)
-```
-
-**Row-Level Security (RLS):**
-- Users can only access their own profile
-- Users can only access their own wardrobe items
-
 ---
 
 ## User Flows
