@@ -9,7 +9,6 @@ if (process.env.NODE_ENV !== 'test') {
 
 const nextConfig: NextConfig = {
   /* config options here */
-  distDir: '.next-build', // Use different build directory to avoid trace file lock
   typescript: {
     ignoreBuildErrors: false, // ✅ Fail builds on TypeScript errors
   },
